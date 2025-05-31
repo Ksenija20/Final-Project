@@ -1,13 +1,24 @@
-apply plugin: 'com.android.application'
+allprojects {
+    buildscript {
+        repositories {
+            google()
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+
 
 dependencies {
-    implementation project(':unityLibrary')
-    }
+    implementation 'com.google.ar:core:1.36.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation(name: 'VuforiaEngine', ext:'aar')
+
+}
 
 android {
-    namespace "com.DefaultCompany.Myproject"
+    namespace "com.unity3d.player"
     ndkPath "/Users/ksu/Downloads/2022.3.59f1/PlaybackEngines/AndroidPlayer/NDK"
-
     compileSdkVersion 35
     buildToolsVersion '34.0.0'
 
@@ -19,35 +30,21 @@ android {
     defaultConfig {
         minSdkVersion 29
         targetSdkVersion 35
-        applicationId 'com.DefaultCompany.Myproject'
         ndk {
             abiFilters 'arm64-v8a'
         }
         versionCode 1
         versionName '0.1'
-    }
-
-    aaptOptions {
-        noCompress = ['.unity3d', '.ress', '.resource', '.obb', '.bundle', '.unityexp'] + unityStreamingAssets.tokenize(', ')
-        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
+        consumerProguardFiles 'proguard-unity.txt'
     }
 
     lintOptions {
         abortOnError false
     }
 
-    buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-            signingConfig signingConfigs.debug
-            jniDebuggable true
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-            signingConfig signingConfigs.debug
-        }
+    aaptOptions {
+        noCompress = ['.unity3d', '.ress', '.resource', '.obb', '.bundle', '.unityexp'] + unityStreamingAssets.tokenize(', ')
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
     }
 
     packagingOptions {
@@ -56,16 +53,7 @@ android {
             useLegacyPackaging true
         }
     }
-
-    bundle {
-        language {
-            enableSplit = false
-        }
-        density {
-            enableSplit = false
-        }
-        abi {
-            enableSplit = true
-        }
-    }
 }
+
+
+
